@@ -18,18 +18,15 @@ PORT = 1883
 topic = "encrypted_edc"+str(no_of_EDC)
 print("This is EDC number  : ",no_of_EDC)
 signature = b'dummy154value'
-result = ""
+previous_message = previous_hash = ""
 i=False
 
 f = open("data/test.csv", "w")
 f.truncate()
 f.close()
 
-with open('edc_pvt_key.pem', 'r') as f:
+with open('edc_pvt_'+str(no_of_EDC)+'.pem', 'r') as f:
     private_key = RSA.importKey(f.read())
-
-with open('iotd_pub_key.pem', 'r') as f:
-    public_key = RSA.importKey(f.read())
 
 def decrypt(rsa_privatekey,b64cipher):
      decoded_ciphertext = base64.b64decode(b64cipher)
@@ -37,11 +34,9 @@ def decrypt(rsa_privatekey,b64cipher):
      return plaintext
 
 def on_message_print(client, userdata, message):
-    # if message.topic == "encrypted_edc"+str(no_of_EDC):
-        #print(mess)
-    global result
-    global i
-    # print(message.payload)
+    global i, previous_hash, previous_message
+    # global i
+
     mess_bytes=(decrypt(private_key,(message.payload)))
     print(mess_bytes)
 
@@ -49,10 +44,16 @@ def on_message_print(client, userdata, message):
     with open('data/test.csv','a+') as f:
         f.write("\n"+str(mess))
         if i==True:
-            f.write(result.hexdigest()+"\n")
-            print(result.hexdigest())
+            hash_message = previous_message + previous_hash
+            print(hash_message)
+            result = hashlib.md5(hash_message.encode())
+            hashed_value = result.hexdigest()
+            f.write(hashed_value+"\n")
+            print(hashed_value)   
+            previous_hash = hashed_value
     f.close()
-    result = hashlib.md5(mess_bytes)
+    previous_message = mess
+   
     i=True
     print("\n")    
 

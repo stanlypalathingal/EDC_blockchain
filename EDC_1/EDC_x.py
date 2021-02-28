@@ -25,7 +25,7 @@ f = open("data/test.csv", "w")
 f.truncate()
 f.close()
 
-with open('edc_pvt_key.pem', 'r') as f:
+with open('edc_pvt_'+str(no_of_EDC)+'.pem', 'r') as f:
     private_key = RSA.importKey(f.read())
 
 def decrypt(rsa_privatekey,b64cipher):

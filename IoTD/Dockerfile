@@ -10,7 +10,6 @@ RUN pip3 install --no-cache-dir --extra-index-url=https://piwheels.org/simple -r
 
 ADD . /
 
-EXPOSE 9003
-RUN chmod a+x script.sh
-ENTRYPOINT ["/bin/bash","script.sh"]
+
+ENTRYPOINT ["python3","data_mining.py"]
 

@@ -25,7 +25,7 @@ f = open("data/test.csv", "w")
 f.truncate()
 f.close()
 
-with open('edc_pvt_'+str(no_of_EDC)+'.pem', 'r') as f:
+with open('data/edc_pvt_'+str(no_of_EDC)+'.pem', 'r') as f:
     private_key = RSA.importKey(f.read())
 
 def decrypt(rsa_privatekey,b64cipher):
@@ -46,7 +46,7 @@ def on_message_print(client, userdata, message):
         if i==True:
             hash_message = previous_message + previous_hash
             print(hash_message)
-            result = hashlib.md5(hash_message.encode())
+            result = hashlib.sha256(hash_message.encode())
             hashed_value = result.hexdigest()
             f.write(hashed_value+"\n")
             print(hashed_value)   

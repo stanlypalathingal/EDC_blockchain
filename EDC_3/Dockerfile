@@ -8,12 +8,9 @@ RUN apt-get -q update && \
 
 COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --extra-index-url=https://www.piwheels.org/simple -r requirements.txt 
-RUN pip install "pymongo" --no-cache-dir --extra-index-url=https://www.piwheels.org/simple
+# RUN pip install "pymongo" --no-cache-dir --extra-index-url=https://www.piwheels.org/simple
 ADD . /
 
-EXPOSE 9012
+ENTRYPOINT ["python3","EDC_x.py"]
 
-ENTRYPOINT ["/bin/bash","./script.sh"]
-
-RUN chmod a+x script.sh
 

@@ -19,20 +19,11 @@ PORT = 1883
 signature = b'dummy154value'
 print("This is the Verifier")
 
-with open('edc_pvt_key.pem', 'r') as f:
+with open('data/edc_pvt_key.pem', 'r') as f:
     private_key = RSA.importKey(f.read())
 
-with open('iotd_pub_key.pem', 'r') as f:
+with open('data/iotd_pub_key.pem', 'r') as f:
     public_key_iotd = RSA.importKey(f.read())
-
-# with open('edc_pub_1.pem', 'r') as f:
-#     public_key1 = RSA.importKey(f.read())
-
-# with open('edc_pub_2.pem', 'r') as f:
-#     public_key2 = RSA.importKey(f.read())
-
-# with open('edc_pub_3.pem', 'r') as f:
-#     public_key3 = RSA.importKey(f.read())
 
 def encrypt(rsa_publickey,plain_text):
      cipher_text=rsa_publickey.encrypt(plain_text,32)[0]
@@ -67,19 +58,16 @@ def on_message_print(client, userdata, message):
 
         if validity==True:
             mess=mess.decode("utf-8")
-            with open('data/test.csv','a+') as f:
-                f.write("\n"+str(mess))
-            f.close()
             
             for x in range(1,int(no_of_EDC)+1):
                 try:
-                    with open('edc_pub_'+str(x)+'.pem', 'r') as f:
+                    with open('data/edc_pub_'+str(x)+'.pem', 'r') as f:
                         public_key = RSA.importKey(f.read())
                     mess_encrypted = encrypt(public_key,mess.encode())
                     publishResult(mess_encrypted,"encrypted_edc"+str(x))
                 except:
-                    print("\nthere are only "+str (x-1)+" pairs. kindly change the number to "+str (x-1))
-                    print("\nor add new public - private key pairs")
+                    print("\n there are only "+str (x-1)+" pairs. kindly change the number to "+str (x-1))
+                    print("\n or add new public - private key pairs")
                     sys.exit()
             print("valid signature")
         else:

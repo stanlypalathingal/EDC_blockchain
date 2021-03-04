@@ -2,8 +2,6 @@ import pandas as pd
 import time
 import sys
 from csv import reader
-# from datetime import date
-# import datetime as day
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as pb
 
@@ -15,13 +13,12 @@ import base64
 mqtt_host=sys.argv[1]
 
 number_of_rows = 0
-df=pd.read_csv("test_data.csv")
+df=pd.read_csv("data/test_data.csv")
 
 def publishResult(value,publish_topic):
     host=mqtt_host 
     port=1883
     pb.single(publish_topic, value, 0, False, host, port)
-
 
 def prepareForPublish1(fileName,publish_topic):
     with open(fileName, 'rb') as f:
@@ -48,10 +45,10 @@ def decrypt(rsa_privatekey,b64cipher):
      plaintext = rsa_privatekey.decrypt(decoded_ciphertext)
      return plaintext
 
-with open('iotd_pvt_key.pem', 'r') as f:
+with open('data/iotd_pvt_key.pem', 'r') as f:
     private_key = RSA.importKey(f.read())
 
-with open('edc_pub_key.pem', 'r') as f:
+with open('data/edc_pub_key.pem', 'r') as f:
     public_key = RSA.importKey(f.read())
 
 while(True):
@@ -59,8 +56,8 @@ while(True):
     a=0
     b=3
     for x in range(0,(int(df.shape[0]/3))):
-        df[a:b].to_csv("sub_test.csv",mode='w+',index=False,header= None)
-        prepareForPublish1("sub_test.csv","usbdata_EDC")
+        df[a:b].to_csv("data/sub_test.csv",mode='w+',index=False,header= None)
+        prepareForPublish1("data/sub_test.csv","usbdata_EDC")
         a=a+3
         b=b+3
 

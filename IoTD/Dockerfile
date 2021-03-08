@@ -9,16 +9,10 @@ RUN apt-get -q update && \
 	apt-get -qy install \ 
 	gcc
 
-#COPY requirements.txt ./requirements.txt
-#RUN pip3 install --no-cache-dir --extra-index-url=https://piwheels.org/simple -r requirements.txt 
-#RUN pip3 install --no-cache-dir -r requirements.txt 
-
-RUN pip3 install --no-cache-dir "pandas==0.25.3" 
-RUN pip3 install --no-cache-dir "paho-mqtt"
-RUN pip3 install --no-cache-dir "pycrypto==2.6.1"
+COPY requirements.txt ./requirements.txt
+RUN pip3 install --no-cache-dir --extra-index-url=https://piwheels.org/simple -r requirements.txt 
 
 ADD . /
-
 
 ENTRYPOINT ["python3","iotd_data_generators.py"]
 

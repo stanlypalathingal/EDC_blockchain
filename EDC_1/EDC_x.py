@@ -45,7 +45,7 @@ def on_message_print(client, userdata, message):
         f.write("\n"+str(mess))
         if i==True:
             hash_message = previous_message + previous_hash
-            print(hash_message)
+            # print(hash_message)
             result = hashlib.sha256(hash_message.encode())
             hashed_value = result.hexdigest()
             f.write(hashed_value+"\n")

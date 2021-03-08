@@ -1,4 +1,4 @@
 pandas==0.25.3
 paho-mqtt
-pycrypto
+pycrypto==2.6.1
 

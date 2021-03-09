@@ -8,6 +8,21 @@ b. pycrypto
 
 c. paho-mqtt
 
+
+To run the system locate the files in the respective folders and run the commands as follows.
+all these must be executed in separete terminals
+```bash
+python3 iotd_data_generators.py 192.168.1.228 
+python3 EDC_verifier.py 192.168.1.228 3
+python3 EDC_x.py 192.168.1.228 1
+python3 EDC_x.py 192.168.1.228 2
+python3 EDC_x.py 192.168.1.228 3
+```
+* **192.168.1.228** refers to the MQTT broker. 
+* **3** in the second command refers to 3 systems to which the data would be sent.
+* The sucessive 1,2 and 3 are the 3 systems. 
+* The received data can be viewed in the **data** folder under the name **test.csv**
+* If anyone would like to increse the number of systems, then the next number should be 4 and so on.
 ### 2. Executing as docker containers
 It requires Docker to be installed in the system and must be able to download 5 images from www.dockerhub.com 
 
@@ -30,11 +45,7 @@ docker run -it -v /home/ubuntu/Documents:/data stanlysac/edc_blockchain:edc_1_ub
 docker run -it -v /home/ubuntu/Documents:/data stanlysac/edc_blockchain:edc_2_ubuntu  192.168.1.228 2
 docker run -it -v /home/ubuntu/Documents:/data stanlysac/edc_blockchain:edc_3_ubuntu  192.168.1.228 3
 ```
-* **192.168.1.228** refers to the MQTT broker. 
-* **3** in the second command refers to 3 systems to which the data would be sent.
-* The sucessive 1,2 and 3 are the 3 systems. 
-* The received data can be viewed in the Documents foldere under the name **test.csv**
-* If anyone would like to increse the number of systems, then the next number should be 4 and so on.
+* The received data can be viewed in the Documents folder under the name **test.csv**
 
 To run in a **Raspberry Pi** (arm32v7) based system use the commands as follows 
 

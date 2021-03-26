@@ -21,9 +21,12 @@ signature = b'dummy154value'
 previous_message = previous_hash = ""
 i=False
 
-f = open("data/test.csv", "w")
+f = open("data/data_"+no_of_EDC+".csv", "w+")
 f.truncate()
 f.close()
+
+def publishResult(value,publish_topic):
+    pb.single(publish_topic, value, 0, False, HOST, PORT)
 
 with open('data/edc_pvt_'+str(no_of_EDC)+'.pem', 'r') as f:
     private_key = RSA.importKey(f.read())
@@ -41,7 +44,7 @@ def on_message_print(client, userdata, message):
     print(mess_bytes)
 
     mess=mess_bytes.decode("utf-8")
-    with open('data/test.csv','a+') as f:
+    with open("data/data_"+no_of_EDC+".csv",'a+') as f:
         f.write("\n"+str(mess))
         if i==True:
             hash_message = previous_message + previous_hash
@@ -49,6 +52,7 @@ def on_message_print(client, userdata, message):
             result = hashlib.sha256(hash_message.encode())
             hashed_value = result.hexdigest()
             f.write(hashed_value+"\n")
+            publishResult(str(dtm.datetime.now()),"end_time")
             print(hashed_value)   
             previous_hash = hashed_value
     f.close()

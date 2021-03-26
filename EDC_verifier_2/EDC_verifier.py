@@ -16,10 +16,10 @@ no_of_EDC = sys.argv[2]
 PORT = 1883
 
 # mqtt_host = sys.argv[1]
-signature = b'dummy154value'
-print("This is the Verifier")
+signature = b'dummyvalue'
+print("This is the Verifier 2 and send data to  "+ no_of_EDC + "  EDC" )
 
-with open('data/edc_pvt_key.pem', 'r') as f:
+with open('data/edc_pvt_key_2.pem', 'r') as f:
     private_key = RSA.importKey(f.read())
 
 with open('data/iotd_pub_key.pem', 'r') as f:
@@ -48,7 +48,7 @@ def on_message_print(client, userdata, message):
         global signature 
         signature = message.payload
         
-    elif message.topic == "encrypted":
+    elif message.topic == "encrypted_2":
         #print(mess)
         global no_of_EDC
         # mess_encrypted = message.payload
@@ -57,9 +57,10 @@ def on_message_print(client, userdata, message):
         validity=verify(public_key_iotd,mess,signature)
 
         if validity==True:
+            publishResult(str(dtm.datetime.now()),"verify_time")
             mess=mess.decode("utf-8")
             
-            for x in range(1,int(no_of_EDC)+1):
+            for x in range(3,int(no_of_EDC)+3):
                 try:
                     with open('data/edc_pub_'+str(x)+'.pem', 'r') as f:
                         public_key = RSA.importKey(f.read())
@@ -74,4 +75,4 @@ def on_message_print(client, userdata, message):
             print("invalid signature")
         print("\n")    
 
-sub.callback(on_message_print, ["encrypted", "signature"], hostname=HOST, port=PORT)
+sub.callback(on_message_print, ["encrypted_2", "signature"], hostname=HOST, port=PORT)

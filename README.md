@@ -4,7 +4,7 @@ In order to execute as a python3 program one need to install three packages
 
 a. pandas
 
-b. pycrypto
+b. pycryptodome
 
 c. paho-mqtt
 
@@ -13,10 +13,12 @@ To run the system locate the files in the respective folders and run the command
 all these must be executed in separete terminals
 ```bash
 python3 iotd_data_generators.py 192.168.1.228 
-python3 EDC_verifier.py 192.168.1.228 3
+python3 EDC_verifier_1.py 192.168.1.228 5
 python3 EDC_x.py 192.168.1.228 1
 python3 EDC_x.py 192.168.1.228 2
 python3 EDC_x.py 192.168.1.228 3
+python3 EDC_x.py 192.168.1.228 4
+python3 EDC_x.py 192.168.1.228 5
 ```
 * **192.168.1.228** refers to the MQTT broker. 
 * **3** in the second command refers to 3 systems to which the data would be sent.
@@ -39,20 +41,24 @@ The present set up has only 3 EDC. In order to increse the number of EDC one nee
 To run in a **Cloud (Ubuntu)** based system use the commands as follows 
 
 ```bash
-docker run -it -v /home/ubuntu/Documents:/data stanlysac/edc_blockchain:iotd_ubuntu 192.168.1.228
-docker run -it -v /home/ubuntu/Documents:/data stanlysac/edc_blockchain:edc_verifier_ubuntu 192.168.1.228 3
+docker run -it -v /home/ubuntu/Documents:/benchmark stanlysac/edc_blockchain:iotd_ubuntu 192.168.1.228
+docker run -it -v /home/ubuntu/Documents:/data stanlysac/edc_blockchain:edc_verifier_ubuntu 192.168.1.228 5
 docker run -it -v /home/ubuntu/Documents:/data stanlysac/edc_blockchain:edc_1_ubuntu  192.168.1.228 1
 docker run -it -v /home/ubuntu/Documents:/data stanlysac/edc_blockchain:edc_2_ubuntu  192.168.1.228 2
 docker run -it -v /home/ubuntu/Documents:/data stanlysac/edc_blockchain:edc_3_ubuntu  192.168.1.228 3
+docker run -it -v /home/ubuntu/Documents:/data stanlysac/edc_blockchain:edc_3_ubuntu  192.168.1.228 4
+docker run -it -v /home/ubuntu/Documents:/data stanlysac/edc_blockchain:edc_3_ubuntu  192.168.1.228 5
 ```
 * The received data can be viewed in the Documents folder under the name **test.csv**
 
 To run in a **Raspberry Pi** (arm32v7) based system use the commands as follows 
 
 ```bash
-docker run -it -v /home/pi/Documents:/data stanlysac/edc_blockchain:iotd_pi 192.168.1.228
-docker run -it -v /home/pi/Documents:/data stanlysac/edc_blockchain:edc_verifier_pi 192.168.1.228 3
+docker run -it -v /home/pi/Documents:/benchmark stanlysac/edc_blockchain:iotd_pi 192.168.1.228
+docker run -it -v /home/pi/Documents:/data stanlysac/edc_blockchain:edc_verifier_pi 192.168.1.228 5
 docker run -it -v /home/pi/Documents:/data stanlysac/edc_blockchain:edc_1_pi  192.168.1.228 1
 docker run -it -v /home/pi/Documents:/data stanlysac/edc_blockchain:edc_2_pi  192.168.1.228 2
 docker run -it -v /home/pi/Documents:/data stanlysac/edc_blockchain:edc_3_pi  192.168.1.228 3
+docker run -it -v /home/pi/Documents:/data stanlysac/edc_blockchain:edc_3_pi  192.168.1.228 4
+docker run -it -v /home/pi/Documents:/data stanlysac/edc_blockchain:edc_3_pi  192.168.1.228 5
 ```

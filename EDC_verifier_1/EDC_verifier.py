@@ -6,10 +6,12 @@ import datetime as dtm
 import sys
 import time
 
-import Crypto
 from Crypto.PublicKey import RSA
-from Crypto import Random
-import base64
+from Crypto.Cipher import PKCS1_v1_5 as Cipher_PKCS1_v1_5
+from Crypto.Hash import SHA1
+from Crypto.Signature import pkcs1_15
+
+from Crypto_Puzzle import cipher_de
 
 HOST = sys.argv[1]
 no_of_EDC = sys.argv[2]
@@ -25,18 +27,23 @@ with open('data/edc_pvt_key_1.pem', 'r') as f:
 with open('data/iotd_pub_key.pem', 'r') as f:
     public_key_iotd = RSA.importKey(f.read())
 
-def encrypt(rsa_publickey,plain_text):
-     cipher_text=rsa_publickey.encrypt(plain_text,32)[0]
-     b64cipher=base64.b64encode(cipher_text)
-     return b64cipher
+def encrypt(key,data):
+    cipher = Cipher_PKCS1_v1_5.new(key)
+    return cipher.encrypt(data.encode())
 
-def decrypt(rsa_privatekey,b64cipher):
-     decoded_ciphertext = base64.b64decode(b64cipher)
-     plaintext = rsa_privatekey.decrypt(decoded_ciphertext)
-     return plaintext
+def decrypt(key,data):
+    decipher = Cipher_PKCS1_v1_5.new(key)
+    return decipher.decrypt(data, None).decode()
 
-def verify(publickey,data,sign):
-     return publickey.verify(data,(int(base64.b64decode(sign)),))
+def verify(pub,message,signature):
+    h = SHA1.new()
+    h.update(message.encode())
+    try:
+        pkcs1_15.new(pub).verify(h, signature)
+        publishResult(str(dtm.datetime.now()),"verify_time")
+        return True
+    except (ValueError, TypeError):
+        return False
 
 def publishResult(value,publish_topic):
     # host=mqtt_host 
@@ -49,22 +56,21 @@ def on_message_print(client, userdata, message):
         signature = message.payload
         
     elif message.topic == "encrypted_1":
-        # print(mess)
         global no_of_EDC
-        # mess_encrypted = message.payload
         mess=(decrypt(private_key,(message.payload)))
-        print(mess)
+
         validity=verify(public_key_iotd,mess,signature)
+        mess=cipher_de(mess,4)
+        print(mess)
+        publishResult(str(dtm.datetime.now()),"puzzle_time")
 
         if validity==True:
-            publishResult(str(dtm.datetime.now()),"verify_time")
-            mess=mess.decode("utf-8")
-            
+
             for x in range(1,int(no_of_EDC)+1):
                 try:
                     with open('data/edc_pub_'+str(x)+'.pem', 'r') as f:
                         public_key = RSA.importKey(f.read())
-                    mess_encrypted = encrypt(public_key,mess.encode())
+                    mess_encrypted = encrypt(public_key,mess)
                     publishResult(mess_encrypted,"encrypted_edc"+str(x))
                 except:
                     print("\n there are only "+str (x-1)+" pairs. kindly change the number to "+str (x-1))

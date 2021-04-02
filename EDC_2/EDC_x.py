@@ -6,10 +6,10 @@ import datetime as dtm
 import sys
 import time
 
-import Crypto
 from Crypto.PublicKey import RSA
-from Crypto import Random
-import base64
+from Crypto.Cipher import PKCS1_v1_5 as Cipher_PKCS1_v1_5
+from Crypto.Hash import SHA1
+from Crypto.Signature import pkcs1_15
 import hashlib 
 
 HOST = sys.argv[1]
@@ -27,23 +27,19 @@ f.close()
 
 def publishResult(value,publish_topic):
     pb.single(publish_topic, value, 0, False, HOST, PORT)
-    
+
 with open('data/edc_pvt_'+str(no_of_EDC)+'.pem', 'r') as f:
     private_key = RSA.importKey(f.read())
 
-def decrypt(rsa_privatekey,b64cipher):
-     decoded_ciphertext = base64.b64decode(b64cipher)
-     plaintext = rsa_privatekey.decrypt(decoded_ciphertext)
-     return plaintext
+def decrypt(key,data):
+    decipher = Cipher_PKCS1_v1_5.new(key)
+    return decipher.decrypt(data, None).decode()
 
 def on_message_print(client, userdata, message):
     global i, previous_hash, previous_message
-    # global i
+    mess =(decrypt(private_key,(message.payload)))
+    print(mess)
 
-    mess_bytes=(decrypt(private_key,(message.payload)))
-    print(mess_bytes)
-
-    mess=mess_bytes.decode("utf-8")
     with open("data/data_"+no_of_EDC+".csv",'a+') as f:
         f.write("\n"+str(mess))
         if i==True:
@@ -59,6 +55,5 @@ def on_message_print(client, userdata, message):
     previous_message = mess
    
     i=True
-    print("\n")    
 
 sub.callback(on_message_print, [topic], hostname=HOST, port=PORT)

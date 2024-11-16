@@ -1,3 +1,7 @@
+The findings of this work are published in ["Decision tree based user-centric security solution for critical IoT infrastructure"](https://doi.org/10.1016/j.compeleceng.2022.107754)
+
+The work simulates a reallife scenario and uses Machine learning methods to identify threats.
+
 ## There are two ways in which the simulator can work 
 ### 1. Executing as a Python3 program
 In order to execute as a python3 program one need to install three packages
